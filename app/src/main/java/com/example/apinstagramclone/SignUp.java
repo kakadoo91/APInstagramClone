@@ -1,6 +1,8 @@
 package com.example.apinstagramclone;
 
 import androidx.appcompat.app.AppCompatActivity ;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -21,11 +23,12 @@ import java.util.List;
 
 public class SignUp extends AppCompatActivity implements View.OnClickListener {
 
-     private Button btnSave;
-     private EditText edtName,edtPunchSpeed,edtPunchPower,edtKickSpeed,edtKickPower;
-     private TextView txtGetData;
-     private Button btnGetAllDatat;
-     private String allKickBoxers;
+    private Button btnSave;
+    private EditText edtName,edtPunchSpeed,edtPunchPower,edtKickSpeed,edtKickPower;
+    private TextView txtGetData;
+    private Button btnGetAllData;
+    private String allKickBoxers;
+    private Button btnTransition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +43,14 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
         edtKickSpeed = findViewById(R.id.edtKickSpeed);
         edtKickPower = findViewById(R.id.edtKickPower);
         txtGetData = findViewById(R.id.txtGetData);
-        btnGetAllDatat = findViewById(R.id.btnGetAllData);
+        btnGetAllData = findViewById(R.id.btnGetAllData);
+        btnTransition = findViewById(R.id.btnNextActivity);
+
         txtGetData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("newKickBoxer");
+                ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("newkickBoxer");
                 parseQuery.getInBackground("uvkEve4PlA", new GetCallback<ParseObject>() {
                     @Override
                     public void done(ParseObject object, ParseException e) {
@@ -59,35 +64,43 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
                 });
             }
         });
-    btnGetAllDatat.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            allKickBoxers = "";
+        btnGetAllData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                allKickBoxers = "";
 
-            ParseQuery<ParseObject> queryAll = ParseQuery.getQuery("newKickBoxer");
-            queryAll.findInBackground(new FindCallback<ParseObject>() {
-                @Override
-                public void done(List<ParseObject> objects, ParseException e) {
-                    if(e == null){
-                        if(objects.size() > 0 ){
+                ParseQuery<ParseObject> queryAll = ParseQuery.getQuery("newkickBoxer");
+                queryAll.whereGreaterThan("punchPower", 20);
+                queryAll.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> objects, ParseException e) {
+                        if (e == null) {
+                            if (objects.size() > 0) {
 
-                            for (ParseObject newkickBoxer :objects){
-                                allKickBoxers = allKickBoxers + newkickBoxer.get("name") + "\n";
+                                for (ParseObject newkickBoxer : objects) {
+                                    allKickBoxers = allKickBoxers + newkickBoxer.get("name") + "\n";
+                                }
+                            }else{
+                                allKickBoxers = "There is no data to show";
                             }
+                            FancyToast.makeText(SignUp.this, allKickBoxers, FancyToast.LENGTH_LONG, FancyToast.SUCCESS, true).show();
 
-                            FancyToast.makeText(SignUp.this,allKickBoxers, FancyToast.LENGTH_LONG, FancyToast.SUCCESS, true).show();
-                        }
-                       else{
+                        } else {
                             FancyToast.makeText(SignUp.this, e.getMessage(), FancyToast.LENGTH_LONG, FancyToast.ERROR, true).show();
-
-                       }
+                        }
                     }
+                });
+            }
+        });
 
-                }
-            });
-
-        }
-    });
+        btnTransition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SignUp.this ,
+                        SignUpLogInActivity.class);
+            startActivity(intent);
+            }
+        });
     }
 
     @Override

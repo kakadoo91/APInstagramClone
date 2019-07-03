@@ -30,3 +30,8 @@ dependencies {
     implementation 'com.github.Shashank02051997:FancyToast-Android:0.1.6'
 
 }
+repositories {
+    mavenCentral()
+    jcenter()
+    maven { url 'https://jitpack.io' }
+}
