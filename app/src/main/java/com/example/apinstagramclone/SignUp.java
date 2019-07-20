@@ -119,6 +119,7 @@ private Button btnSignUp,btnLogIn;
     private void transitionToSocialMediaActivity (){
     Intent intent = new Intent(SignUp.this, SocialMediaActivity.class);
     startActivity(intent);
+    finish();
 
     }
 
